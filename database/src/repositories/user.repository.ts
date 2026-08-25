@@ -37,4 +37,32 @@ export const userRepository = {
             where: {id},data
         });
     },
+
+    searchUsers(query?: string, excludeUserId?: string) {
+        return prisma.user.findMany({
+            where: {
+                deletedAt: null,
+                ...(excludeUserId ? { id: { not: excludeUserId } } : {}),
+                ...(query
+                    ? {
+                          OR: [
+                              { name: { contains: query, mode: "insensitive" } },
+                              { email: { contains: query, mode: "insensitive" } },
+                          ],
+                      }
+                    : {}),
+            },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                avatarUrl: true,
+                createdAt: true,
+            },
+            orderBy: {
+                name: "asc",
+            },
+            take: 50,
+        });
+    },
 };

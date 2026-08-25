@@ -1,0 +1,511 @@
+{
+  "repositories": {
+    "attachmentRepository": {
+      "file": "attachment.repository.ts",
+      "exportName": "attachmentRepository",
+      "prismaModel": "attachment",
+      "functions": [
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "messageId": "string",
+                "originalName": "string",
+                "storageKey": "string",
+                "mimeType": "string",
+                "size": "bigint"
+              }
+            }
+          ],
+          "returns": "Promise<Attachment>",
+          "description": "Creates a new attachment record linked to a message"
+        },
+        {
+          "name": "findById",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<Attachment | null>",
+          "description": "Finds a single attachment by its unique ID"
+        },
+        {
+          "name": "findByMessage",
+          "parameters": [
+            { "name": "messageId", "type": "string" }
+          ],
+          "returns": "Promise<Attachment[]>",
+          "description": "Finds all attachments for a given message, ordered by createdAt ascending"
+        },
+        {
+          "name": "delete",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<Attachment>",
+          "description": "Deletes an attachment by its ID"
+        }
+      ],
+      "localVariables": []
+    },
+
+    "conversationMemberRepository": {
+      "file": "conversation-member.repository.ts",
+      "exportName": "conversationMemberRepository",
+      "prismaModel": "conversationMember",
+      "functions": [
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "conversationId": "string",
+                "userId": "string",
+                "role": "\"MEMBER\" | \"ADMIN\" (optional)"
+              }
+            }
+          ],
+          "returns": "Promise<ConversationMember>",
+          "description": "Adds a user to a conversation with an optional role"
+        },
+        {
+          "name": "findByConversationAndUser",
+          "parameters": [
+            { "name": "conversationId", "type": "string" },
+            { "name": "userId", "type": "string" }
+          ],
+          "returns": "Promise<ConversationMember | null>",
+          "description": "Finds a specific membership record by composite key (conversationId + userId)"
+        },
+        {
+          "name": "isMember",
+          "parameters": [
+            { "name": "conversationId", "type": "string" },
+            { "name": "userId", "type": "string" }
+          ],
+          "returns": "Promise<{ id: string } | null>",
+          "description": "Checks whether a user is a member of a conversation; returns only the id field"
+        },
+        {
+          "name": "findByConversation",
+          "parameters": [
+            { "name": "conversationId", "type": "string" }
+          ],
+          "returns": "Promise<ConversationMember[]>",
+          "description": "Retrieves all members of a conversation, ordered by joinedAt ascending"
+        },
+        {
+          "name": "remove",
+          "parameters": [
+            { "name": "conversationId", "type": "string" },
+            { "name": "userId", "type": "string" }
+          ],
+          "returns": "Promise<ConversationMember>",
+          "description": "Removes a user from a conversation using the composite unique key"
+        }
+      ],
+      "localVariables": []
+    },
+
+    "conversationRepository": {
+      "file": "conversation.repository.ts",
+      "exportName": "conversationRepository",
+      "prismaModel": "conversation",
+      "functions": [
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "name": "string (optional)",
+                "isGroup": "boolean",
+                "directKey": "string (optional)"
+              }
+            }
+          ],
+          "returns": "Promise<Conversation>",
+          "description": "Creates a new conversation (group or direct)"
+        },
+        {
+          "name": "findById",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<Conversation | null>",
+          "description": "Finds a conversation by its unique ID"
+        },
+        {
+          "name": "findDirectKey",
+          "parameters": [
+            { "name": "directKey", "type": "string" }
+          ],
+          "returns": "Promise<Conversation | null>",
+          "description": "Finds a direct conversation by its unique directKey"
+        },
+        {
+          "name": "update",
+          "parameters": [
+            { "name": "id", "type": "string" },
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "name": "string (optional)",
+                "isGroup": "boolean (optional)",
+                "directKey": "string (optional)"
+              }
+            }
+          ],
+          "returns": "Promise<Conversation>",
+          "description": "Updates conversation fields by ID"
+        }
+      ],
+      "localVariables": []
+    },
+
+    "emailVerificationRepository": {
+      "file": "email-verification.repository.ts",
+      "exportName": "emailVerificationRepository",
+      "prismaModel": "emailVerification",
+      "functions": [
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "userId": "string",
+                "tokenHash": "string",
+                "expiresAt": "Date"
+              }
+            }
+          ],
+          "returns": "Promise<EmailVerification>",
+          "description": "Creates a new email verification record"
+        },
+        {
+          "name": "findByTokenHash",
+          "parameters": [
+            { "name": "tokenHash", "type": "string" }
+          ],
+          "returns": "Promise<EmailVerification | null>",
+          "description": "Finds an email verification record by its hashed token"
+        },
+        {
+          "name": "markVerified",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<EmailVerification>",
+          "description": "Sets verifiedAt to the current timestamp, marking the email as verified"
+        },
+        {
+          "name": "delete",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<EmailVerification>",
+          "description": "Deletes an email verification record by ID"
+        }
+      ],
+      "localVariables": []
+    },
+
+    "messageStatusRepository": {
+      "file": "message-status.repository.ts",
+      "exportName": "messageStatusRepository",
+      "prismaModel": "messageStatus",
+      "functions": [
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "messageId": "string",
+                "userId": "string",
+                "status": "\"SENT\" | \"DELIVERED\" | \"READ\" (optional)"
+              }
+            }
+          ],
+          "returns": "Promise<MessageStatus>",
+          "description": "Creates a new message status record for a user"
+        },
+        {
+          "name": "findById",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<MessageStatus | null>",
+          "description": "Finds a message status record by its unique ID"
+        },
+        {
+          "name": "findByMessageAndUser",
+          "parameters": [
+            { "name": "messageId", "type": "string" },
+            { "name": "userId", "type": "string" }
+          ],
+          "returns": "Promise<MessageStatus | null>",
+          "description": "Finds a message status using the composite unique key (messageId + userId)"
+        },
+        {
+          "name": "updateStatus",
+          "parameters": [
+            { "name": "id", "type": "string" },
+            { "name": "status", "type": "\"SENT\" | \"DELIVERED\" | \"READ\"" }
+          ],
+          "returns": "Promise<MessageStatus>",
+          "description": "Updates the status of a message; automatically sets deliveredAt or readAt timestamps when status is DELIVERED or READ respectively",
+          "localVariables": [
+            {
+              "name": "data",
+              "type": "{ status: string; deliveredAt?: Date; readAt?: Date }",
+              "description": "Constructed update payload; conditionally includes timestamp fields based on status value"
+            }
+          ]
+        }
+      ],
+      "localVariables": []
+    },
+
+    "messageRepository": {
+      "file": "message.repository.ts",
+      "exportName": "messageRepository",
+      "prismaModel": "message",
+      "functions": [
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "conversationId": "string",
+                "senderId": "string",
+                "content": "string"
+              }
+            }
+          ],
+          "returns": "Promise<Message>",
+          "description": "Creates a new message in a conversation"
+        },
+        {
+          "name": "findById",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<Message | null>",
+          "description": "Finds a message by its unique ID"
+        },
+        {
+          "name": "update",
+          "parameters": [
+            { "name": "id", "type": "string" },
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "content": "string (optional)"
+              }
+            }
+          ],
+          "returns": "Promise<Message>",
+          "description": "Updates message content by ID"
+        },
+        {
+          "name": "softDelete",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<Message>",
+          "description": "Soft-deletes a message by setting deletedAt to the current timestamp"
+        },
+        {
+          "name": "findByConversation",
+          "parameters": [
+            { "name": "conversationId", "type": "string" },
+            { "name": "take", "type": "number", "default": 50 }
+          ],
+          "returns": "Promise<Message[]>",
+          "description": "Retrieves non-deleted messages from a conversation, ordered by createdAt descending, with a configurable limit (default 50)"
+        }
+      ],
+      "localVariables": []
+    },
+
+    "oauthAccountRepository": {
+      "file": "oauth-account.repository.ts",
+      "exportName": "oauthAccountRepository",
+      "prismaModel": "oAuthAccount",
+      "functions": [
+        {
+          "name": "findByProviderAccount",
+          "parameters": [
+            { "name": "provider", "type": "\"GOOGLE\" | \"GITHUB\"" },
+            { "name": "providerAccountId", "type": "string" }
+          ],
+          "returns": "Promise<OAuthAccount | null>",
+          "description": "Finds an OAuth account by composite key (provider + providerAccountId)"
+        },
+        {
+          "name": "findByUserId",
+          "parameters": [
+            { "name": "userId", "type": "string" }
+          ],
+          "returns": "Promise<OAuthAccount[]>",
+          "description": "Returns all linked OAuth accounts for a given user"
+        },
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "userId": "string",
+                "provider": "\"GOOGLE\" | \"GITHUB\"",
+                "providerAccountId": "string"
+              }
+            }
+          ],
+          "returns": "Promise<OAuthAccount>",
+          "description": "Links a new OAuth provider account to a user"
+        },
+        {
+          "name": "delete",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<OAuthAccount>",
+          "description": "Removes an OAuth account link by ID"
+        }
+      ],
+      "localVariables": []
+    },
+
+    "refreshTokenRepository": {
+      "file": "refresh-token.repository.ts",
+      "exportName": "refreshTokenRepository",
+      "prismaModel": "refreshToken",
+      "functions": [
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "userId": "string",
+                "tokenHash": "string",
+                "expiresAt": "Date"
+              }
+            }
+          ],
+          "returns": "Promise<RefreshToken>",
+          "description": "Creates a new refresh token record for a user"
+        },
+        {
+          "name": "findByTokenHash",
+          "parameters": [
+            { "name": "tokenHash", "type": "string" }
+          ],
+          "returns": "Promise<RefreshToken | null>",
+          "description": "Finds a refresh token by its hashed value"
+        },
+        {
+          "name": "findById",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<RefreshToken | null>",
+          "description": "Finds a refresh token by its unique ID"
+        },
+        {
+          "name": "revoke",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<RefreshToken>",
+          "description": "Revokes a refresh token by setting revokedAt to the current timestamp"
+        },
+        {
+          "name": "findActiveByUser",
+          "parameters": [
+            { "name": "userId", "type": "string" }
+          ],
+          "returns": "Promise<RefreshToken[]>",
+          "description": "Retrieves all active (non-revoked, non-expired) refresh tokens for a user, ordered by createdAt descending"
+        }
+      ],
+      "localVariables": []
+    },
+
+    "userRepository": {
+      "file": "user.repository.ts",
+      "exportName": "userRepository",
+      "prismaModel": "user",
+      "functions": [
+        {
+          "name": "findById",
+          "parameters": [
+            { "name": "id", "type": "string" }
+          ],
+          "returns": "Promise<User | null>",
+          "description": "Finds a user by their unique ID"
+        },
+        {
+          "name": "findByEmail",
+          "parameters": [
+            { "name": "email", "type": "string" }
+          ],
+          "returns": "Promise<User | null>",
+          "description": "Finds a user by their unique email address"
+        },
+        {
+          "name": "create",
+          "parameters": [
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "email": "string",
+                "passwordHash": "string (optional)",
+                "name": "string (optional)",
+                "avatarUrl": "string (optional)"
+              }
+            }
+          ],
+          "returns": "Promise<User>",
+          "description": "Creates a new user record"
+        },
+        {
+          "name": "update",
+          "parameters": [
+            { "name": "id", "type": "string" },
+            {
+              "name": "data",
+              "type": "object",
+              "fields": {
+                "email": "string (optional)",
+                "passwordHash": "string (optional)",
+                "name": "string (optional)",
+                "avatarUrl": "string (optional)"
+              }
+            }
+          ],
+          "returns": "Promise<User>",
+          "description": "Updates one or more fields of a user record by ID"
+        }
+      ],
+      "localVariables": []
+    }
+  }
+}

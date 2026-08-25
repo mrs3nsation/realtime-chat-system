@@ -2,6 +2,16 @@ import type { Request, Response, NextFunction } from "express";
 import * as userService from "../services/user/user.service.js";
 import { sendSuccess } from "../utils/response.js";
 
+export async function searchUsers(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const query = req.query.query as string | undefined;
+    const users = await userService.searchUsers(query, req.user!.id);
+    sendSuccess(res, users);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function getProfile(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const user = await userService.getProfile(req.user!.id);

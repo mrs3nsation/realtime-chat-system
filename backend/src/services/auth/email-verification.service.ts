@@ -52,5 +52,9 @@ export async function resendVerification(
   expiresAt.setHours(expiresAt.getHours() + 24);
 
   await emailVerificationRepository.create({ userId, tokenHash, expiresAt });
-  await sendVerificationEmail(email, rawToken);
+  try {
+    await sendVerificationEmail(email, rawToken);
+  } catch (err) {
+    console.warn("[email-verification] Failed to send verification email:", err);
+  }
 }

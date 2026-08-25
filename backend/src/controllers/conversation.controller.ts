@@ -2,6 +2,15 @@ import type { Request, Response, NextFunction } from "express";
 import * as conversationService from "../services/conversation/conversation.service.js";
 import { sendSuccess } from "../utils/response.js";
 
+export async function listConversations(req: Request, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const conversations = await conversationService.listUserConversations(req.user!.id);
+    sendSuccess(res, conversations);
+  } catch (err) {
+    next(err);
+  }
+}
+
 export async function createDirect(req: Request, res: Response, next: NextFunction): Promise<void> {
   try {
     const { recipientId } = req.body as { recipientId: string };

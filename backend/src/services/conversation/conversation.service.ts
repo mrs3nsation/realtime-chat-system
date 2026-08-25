@@ -5,6 +5,10 @@ import {
 } from "../../config/db.js";
 import { ConflictError, ForbiddenError, NotFoundError } from "../../utils/errors.js";
 
+export async function listUserConversations(userId: string) {
+  return conversationRepository.listUserConversations(userId);
+}
+
 export async function createDirectConversation(
   currentUserId: string,
   recipientId: string
@@ -18,7 +22,8 @@ export async function createDirectConversation(
 
   const existing = await conversationRepository.findDirectKey(directKey);
   if (existing) {
-    return existing;
+    const members = await conversationMemberRepository.findByConversation(existing.id);
+    return { ...existing, members };
   }
 
   const conversation = await conversationRepository.create({
@@ -29,7 +34,8 @@ export async function createDirectConversation(
   await conversationMemberRepository.create({ conversationId: conversation.id, userId: currentUserId });
   await conversationMemberRepository.create({ conversationId: conversation.id, userId: recipientId });
 
-  return conversation;
+  const members = await conversationMemberRepository.findByConversation(conversation.id);
+  return { ...conversation, members };
 }
 
 export async function createGroupConversation(

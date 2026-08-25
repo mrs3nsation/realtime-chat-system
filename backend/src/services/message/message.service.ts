@@ -13,17 +13,19 @@ export async function sendMessage(
 export async function getMessages(
   conversationId: string,
   userId: string,
-  limit = 20,
+  limit = 50,
   cursor?: string
 ) {
-  const membership = await conversationMemberRepository.isMember(conversationId, userId);
+  const [membership, messages] = await Promise.all([
+    conversationMemberRepository.isMember(conversationId, userId),
+    messageRepository.findByConversation(conversationId, limit + 1),
+  ]);
+
   if (!membership) {
     throw new ForbiddenError("You are not a member of this conversation");
   }
 
   const parsed = parseMessageCursor(cursor);
-
-  const messages = await messageRepository.findByConversation(conversationId, limit + 1);
 
   const filteredMessages = parsed
     ? messages.filter(

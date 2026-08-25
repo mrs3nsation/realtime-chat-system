@@ -2,6 +2,10 @@ import { userRepository } from "../../config/db.js";
 import { hashPassword, verifyPassword } from "../../utils/password.js";
 import { NotFoundError, UnauthorizedError, BadRequestError } from "../../utils/errors.js";
 
+export async function searchUsers(query?: string, excludeUserId?: string) {
+  return userRepository.searchUsers(query, excludeUserId);
+}
+
 export async function getProfile(userId: string) {
   const user = await userRepository.findById(userId);
   if (!user) {

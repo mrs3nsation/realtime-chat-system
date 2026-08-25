@@ -10,6 +10,18 @@ export const messageRepository = {
     ) {
         return prisma.message.create({
             data,
+            include: {
+                sender: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        avatarUrl: true,
+                    },
+                },
+                attachments: true,
+                statuses: true,
+            },
         });
     },
 
@@ -17,6 +29,18 @@ export const messageRepository = {
         return prisma.message.findUnique({
             where: {
                 id,
+            },
+            include: {
+                sender: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        avatarUrl: true,
+                    },
+                },
+                attachments: true,
+                statuses: true,
             },
         });
     },
@@ -54,6 +78,18 @@ export const messageRepository = {
             where: {
                 conversationId,
                 deletedAt: null,
+            },
+            include: {
+                sender: {
+                    select: {
+                        id: true,
+                        name: true,
+                        email: true,
+                        avatarUrl: true,
+                    },
+                },
+                attachments: true,
+                statuses: true,
             },
             orderBy: {
                 createdAt: "desc"

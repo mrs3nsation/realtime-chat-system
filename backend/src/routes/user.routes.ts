@@ -8,6 +8,7 @@ const router = Router();
 
 router.use(requireAuth);
 
+router.get("/", userController.searchUsers);
 router.get("/me", userController.getProfile);
 router.patch("/me", validate(updateProfileSchema), userController.updateProfile);
 router.patch("/me/password", validate(changePasswordSchema), userController.changePassword);

@@ -16,6 +16,7 @@ const router = Router();
 
 router.use(requireAuth);
 
+router.get("/", conversationController.listConversations);
 router.post("/direct", validate(createDirectConversationSchema), conversationController.createDirect);
 router.post("/group", validate(createGroupConversationSchema), conversationController.createGroup);
 
